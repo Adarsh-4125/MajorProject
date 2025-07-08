@@ -2,17 +2,20 @@ const mongoose = require("mongoose");
 const Review = require("./review.js");
 const Schema = mongoose.Schema;
 
-
+const imageSchema = new Schema({
+  filename: String,
+  url: {
+    type: String,
+    required: true,
+  },
+});
 const listingSchema = new Schema({
   title: {
     type: String,
     required: true,
   },
   description: String,
-image: {
-  url: String,
-  filename: String,
-},
+  image: [imageSchema],
   price: Number,
   location: String,
   country: String,
@@ -39,6 +42,9 @@ image: {
     type: String,
     enum: ['trending', 'room', 'mountains', 'castles', 'pools', 'homes', 'farms', 'camping'],
     required: true,
+  },
+  submittedAt: {
+    type: Date,
   },
 });
 

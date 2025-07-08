@@ -8,7 +8,12 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
-    
+    recentViews: [{ type: Schema.Types.ObjectId, ref: 'Listing', default: [] }],
+    recentCategories: { type: [String], default: [] },
+    isAdmin: {
+        type: Boolean,
+        default: false
+    }
 });
 
 userSchema.plugin(passportLocalMongoose);

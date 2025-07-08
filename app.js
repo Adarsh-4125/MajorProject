@@ -16,17 +16,20 @@ const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user.js");
 
+
 const listingsRouter = require("./routes/listing.js")
 const reviewsRouter =  require("./routes/review.js");
 const userRouter = require("./routes/user.js");
-
+const adminRoutes = require("./routes/admin.js");
+const bookingRouter = require("./routes/booking.js");
 const dbUrl = process.env.ATLASDB_URL;
 
 main().then(() => {
     console.log("connected to DB");
 })
 .catch((err) => {
-    console.log(err);
+    //console.log(err);
+    console.log("Error connecting to DB");
 });
 
 async function main() {
@@ -93,6 +96,8 @@ app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 
 app.use("/", userRouter);
+app.use("/admin", adminRoutes);
+app.use("/", bookingRouter);
 
 
 app.all("*", (req, res, next) => {

@@ -208,3 +208,36 @@ Basically We have added functioning for the icons of our page for that we divide
 4.Taken input from user to check if they are working or not, for now they are working
 5.In controllers to filter listing based on icon we have created function filterListings and 
 then it is routed in our routers/listing.js and successfully Implemented functionality.
+
+Implemented small Personalized recommendations functionality in project to implement these
+1.In userSchema added new attributes -> recentViews,recentCategories array so that it 
+tracks user information and give recommendations according to it.
+2.Implemented middleware trackView function for tracking and then first added in
+controllers but delted later to not track it doubly.
+3.Created recommendations.ejs files to show recommendations on user usage.
+
+For icons tried to implement to slide horizontally but there is some issue used 
+glider bootStrap.
+
+Trying to upload multiple images of listing I have made array of images and edited controllers of
+upadatelisting and createListing in which I am trying to upload upto 3 images
+Nxt we have to do changes in show.ejs and edit.ejs for rendering and editing multiple images 
+we will do this tommorow after test.
+successfully we can upload upto three images of listings and now we have to do some styling
+for that and improve the review showing and let focus on that.
+Done styling of the images on the show.ejs we have done great job let appreciate myself.
+Done styling of the map also and today night after 9 we have to change the name of website and if we
+have we will implement payment
+Dayaftertommorow we have to change the wanderlust name to the other and we will recommit the code in github.
+
+Nxt we have also completed sql project 50% and remaining 50% is there and we will complete upto tommorow.
+Now start operating systems.
+      <div class="col-md-6 ms-3">
+        <!-- <div id="map" class="map"></div> -->
+         <% listing.image.forEach(img => { %>
+          <img src="<%= img.url %>" alt="listing image" class="img-fluid mb-2 card-img-top mb-3" alt="<%= listing.title %>" />
+          <% }) %>
+      </div>
+
+Today created mongoose model for booking where I have included listing,user,checkin,checkout,totalPrice,guests
+and status and createdat for testing implemented small controller to render bookingform and done client side validation for form

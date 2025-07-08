@@ -19,6 +19,7 @@ const listingSchema = Joi.object({
             'camping'
         ).required(),
     }).required(),
+    deleteImages: Joi.array().items(Joi.string()).optional()
 });
 
 const reviewSchema = Joi.object({

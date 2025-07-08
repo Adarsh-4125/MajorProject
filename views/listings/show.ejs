@@ -1,58 +1,230 @@
 <% layout('layouts/boilerplate') %>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    color: #f1f1f1 !important;
+  }
+
+  .dark-mode .heading {
+    color: #f1f1f1 !important;
+    background: linear-gradient(135deg, var(--primary-color), #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .dark-mode .listing-card {
+    background: linear-gradient(135deg, rgba(45, 55, 72, 0.9) 0%, rgba(45, 55, 72, 0.95) 100%) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+
+  .dark-mode .owner-section {
+    background: rgba(45, 55, 72, 0.5) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+
+  .dark-mode .review-form {
+    background: linear-gradient(135deg, rgba(45, 55, 72, 0.9) 0%, rgba(45, 55, 72, 0.95) 100%) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+
+  .dark-mode .review-form .form-control {
+    background: rgba(45, 55, 72, 0.8) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: #f1f1f1 !important;
+  }
+
+  .dark-mode .review-form .form-control::placeholder {
+    color: #a0aec0 !important;
+  }
+
+  .dark-mode .review-form .form-control:focus {
+    background: rgba(45, 55, 72, 1) !important;
+    border-color: var(--primary-color) !important;
+  }
+
+  .dark-mode .review-card {
+    background: linear-gradient(135deg, rgba(45, 55, 72, 0.9) 0%, rgba(45, 55, 72, 0.95) 100%) !important;
+    border-color: rgba(255,255,255,0.1) !important;
+  }
+  .dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6,
+   .dark-mode strong, .dark-mode .card-title {
+    color: #f1f1f1 !important;
+  }
+
+  .dark-mode .text-secondary {
+    color: #a0aec0 !important;
+  }
+
+  .dark-mode .listing-location {
+    color: #a0aec0 !important;
+  }
+
+   .dark-mode .listing-descrpition {
+    color: black !important;
+  }
+
+  .dark-mode .owner-avatar {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+  }
+
+  .dark-mode .btn-secondary-enhanced {
+    background: rgba(45, 55, 72, 0.8) !important;
+    color: #f1f1f1 !important;
+    border-color: rgba(255,255,255,0.2) !important;
+  }
+
+  .dark-mode .btn-secondary-enhanced:hover {
+    background: rgba(45, 55, 72, 1) !important;
+    color: #f1f1f1 !important;
+  }
+</style>
+
 <script>
     const mapToken = "<%= process.env.MAP_TOKEN; %>";
     const listing = <%- JSON.stringify(listing) %>;
 </script>
-<!-- Show - Form -->
-<div class="row">
-    <div class="col-8 offset-3">
-        <h3><%= listing.title %></h3>
+
+<div class="container">
+  <!-- <div class="row mb-5">
+    <div class="col col-lg-10 col-md-10 col-sm-12 cols-xs-10 mx-auto"> -->
+  <div class="listing-header">
+  <h1 class="mt-4 mb-4 heading"><%= listing.title %></h1>
+  </div>
+  <div class="image-gallery">
+    <% if (listing.image.length == 1) { %>
+      <div class="position-relative">
+        <img src="<%= listing.image[0].url %>" class="img-fluid w-100" 
+        style="height: 56vh;" 
+        alt="Image of <%= listing.title %>">
+        <div class="image-overlay"></div>
+      </div>
+    <% } else if (listing.image.length === 2 || listing.image.length === 3) { %>
+      <div class="d-none d-lg-block">
+        <% if(listing.image.length === 2) { %>
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="position-relative">
+                <img src="<%= listing.image[0].url %>" class="img-fluid w-100" 
+                style="height: 56vh;" 
+                alt="Image of <%= listing.title %>">
+                <div class="image-overlay"></div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="position-relative">
+                <img src="<%= listing.image[1].url %>" class="img-fluid w-100" 
+                style="height: 56vh;" 
+                alt="Image of <%= listing.title %>">
+                <div class="image-overlay"></div>
+              </div>
+            </div>
+          </div>
+        <% } else if (listing.image.length === 3) { %>
+          <div class="row g-2">
+            <div class="col-lg-8">
+              <div class="position-relative">
+                <img src="<%= listing.image[0].url %>" class="img-fluid w-100" 
+                style="height: 56vh;" 
+                alt="Image of <%= listing.title %>">
+                <div class="image-overlay"></div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="row g-2">
+                <div class="col-12">
+                  <div class="position-relative">
+                    <img src="<%= listing.image[1].url %>" class="img-fluid w-100" 
+                    style="height: 27.5vh;" 
+                    alt="Image of <%= listing.title %>">
+                    <div class="image-overlay"></div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="position-relative">
+                    <img src="<%= listing.image[2].url %>" class="img-fluid w-100" 
+                    style="height: 27.5vh;" 
+                    alt="Image of <%= listing.title %>">
+                    <div class="image-overlay"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+        <% } %>
+      </div>
+
+      <div class="d-lg-none">
+        <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <% for (let i = 0; i < listing.image.length; i++) { %>
+              <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+                <div class="position-relative">
+                  <img src="<%= listing.image[i].url %>" class="img-fluid w-100" style="height: 56vh;" alt="Image of <%= listing.title %>">
+                  <div class="image-overlay"></div>
+                </div>
+              </div>
+            <% } %>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    <% } %>
+  </div>
+
+      <div class="listing-ard mb-3">
+    <span class="badge-category"><%= listing.category %></span>
+    <div class="listing-location mb-1">
+      <i class="fa-solid fa-location-dot"></i>
+      <%= listing.location %>, <%= listing.country %>
     </div>
-    <div class="card col-6 offset-3 show-card mb-3">
-        <img src="<%= listing.image.url %>" 
-        class="card-img-top show-img" 
-        alt="listing_image" />
-    <div class="card-body">
-        <p class="card-text fst-italic">Owned by   <%= listing.owner.username %><br></p>
-           <p class="card-text"><%= listing.description %></p>
-            <p class="card-text"><%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %></p>
-            <p class="card-text"><%= listing.location %></p>
-            <p class="card-text"><%= listing.country %></p><br> 
+    <div class="listing-price mb-1">₹<%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %></div>
+    <p class="listing-description"><%= listing.description %></p>
+    
+    <div class="owner-section mb-2">
+      <img src="https://ui-avatars.com/api/?name=<%= listing.owner.username %>&background=fe424d&color=fff" class="owner-avatar" alt="Owner">
+      <div class="owner-info">
+        <h5>Hosted by <%= listing.owner.username %></h5>
+        <p>Superhost • Joined in 2023</p>
       </div>
     </div>
 
-
-    <% if(currentUser && currentUser._id.equals(listing.owner._id)) { %>
-        
-    
-    <div class="offset-1 btns mb-3">
-        <a href="/listings/<%= listing._id %>/edit" 
-            class="btn btn-dark col-1.5 offset-2 edit-btn">
-            Edit
+    <div class="action-buttons">
+      <% if(currentUser && currentUser._id.equals(listing.owner._id)) { %>
+        <a href="/listings/<%= listing._id %>/edit" class="btn-enhanced btn-outline-enhanced">
+          <i class="fas fa-edit me-2"></i>Edit Listing
         </a>
-        <br/>
-            <form method="POST" 
-            action="/listings/<%=listing._id%>?_method=DELETE">
-            <button class="btn btn-dark offset-3 delete-btn">Delete</button>
-            </form>
-        <a href="/listings" class="btn btn-dark col-1.5 offset-1 back-btn">
-            Back
-        </a>
+        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" style="display:inline;">
+          <button class="btn-enhanced btn-outline-enhanced" type="submit">
+            <i class="fas fa-trash me-2"></i>Delete Listing
+          </button>
+        </form>
+      <% } %>
+      <a href="/listings" class="btn-enhanced btn-outline-enhanced">
+        <i class="fas fa-arrow-left me-2"></i>Back to Listings
+      </a>
     </div>
-    <br>
-    <% } %>
-   
+  </div>
 
-    <!-- Review Form -->
-
-    <div class="col-8 offset-3 mb-3">
-        <hr/>
-        <% if(currentUser) { %>
-       <h4>Leave a Review</h4>
-       <form action="/listings/<%=listing.id%>/reviews" method="POST" novalidate class="needs-validation">
-        <div class="mb-3 mt-3">
-            <label for="rating" class="form-label">Rating</label>
-        <fieldset class="starability-slot">
+  <!-- Review Form -->
+  <div class="review-section">
+    <% if(currentUser) { %>
+      <h4><i class="fas fa-star me-2" style="color: #ffd700;" ></i>Leave a Review</h4>
+      <form action="/listings/<%=listing.id%>/reviews" method="POST" novalidate class="needs-validation mb-4">
+        <div class="mb-3 mt-3 review-form">
+          <div class="mb-4">
+          <label for="rating" class="form-label">
+            <strong><i class="fas fa-star me-2" style="color: #ffd700;"></i>Rating</strong></label>
+          <fieldset class="starability-slot">
             <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="2" checked aria-label="No rating." />
             <input type="radio" id="first-rate1" name="review[rating]" value="1" />
             <label for="first-rate1" title="Terrible">1 star</label>
@@ -64,46 +236,59 @@
             <label for="first-rate4" title="Very good">4 stars</label>
             <input type="radio" id="first-rate5" name="review[rating]" value="5" />
             <label for="first-rate5" title="Amazing">5 stars</label>
-        </fieldset>
+          </fieldset>
         </div>
-        <div class="mb-3 mt-3">
-            <label for="comment" class="form-label">Comments</label>
-            <textarea 
-            id="comment" 
-            name="review[comment]" 
-            cols="30" rows="5" 
-            class="form-control"
-            required></textarea>
-            <div class="invalid-feedback">Please leave a comment for review</div>
-            <button class="btn btn-dark col-1.5 edit-btn mb-3 mt-3">Submit</button>
+        <div class="mb-4">
+          <label for="comment" class="form-label">
+            <strong><i class="fas fa-comment me-2"></i>Comments</strong></label>
+          <textarea id="comment" name="review[comment]" cols="30" rows="3" class="form-control focus-ring focus-ring-secondary border rounded-1" required></textarea>
+          <div class="invalid-feedback">Please leave a comment for review</div>
         </div>
-       </form>
-       <hr/>
-       
-    <% } %> 
-    <% if(listing.reviews.length > 0) { %>
-       <div class="row">
-        <b><p>All Reviews</p></b>
-       <% for(review of listing.reviews) { %>
-        <div class="card col-5 ms-3 mb-3">
-            <div class="card-body">
-                <h5 class="card-title">@<%= review.author.username %></h5>
-                <p class="starability-result card-text" data-rating= "<%= review.rating %>">Rated: 3 stars</p>
-                <p class="card-text">Posted on: <%= review.createdAt.toLocaleDateString("en-IN") %></p>
-                <p class="card-text"><%= review.comment %></p>
-            </div>
-            <!-- Delete Reviews -->
-            <form class="mb-3" method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                <button class="btn btn-sm btn-dark mt-3">Delete</button>
-            </form>
-        </div>
+        <button class="btn-enhanced btn-outline-enhanced">
+          <i class="fas fa-paper-plane me-2"></i>Submit</button>
+      </div>
+      </form>
     <% } %>
-    </div>
-<% } %>
-    </div>
-    <div class="col-6 offset-3 mb-3">
-        <h3>Where you'll be</h3>
-        <div id="map" class="map"></div>
-    </div>
+
+    <h4 class="mb-3"><i class="fas fa-comments me-2"></i>Reviews</h4>
+    <% if(listing.reviews.length === 0) { %>
+      <div class="alert alert-info">No reviews yet. Be the first to review!</div>
+    <% } else { %>
+      <div class="row g-4">
+        <% listing.reviews.forEach((review, index) => { %>
+          <div class="col-12 col-sm-6 col-lg-4" style="animation-delay: <%= index * 0.1 %>s;">
+            <div class="card review-card h-100">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <p class="starability-result" data-rating="<%= review.rating %>"></p>
+                <small class="review-date">
+                  <%= new Date(review.createdAt).toLocaleDateString("en-IN", {
+                    weekday: "short",
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  }) %>
+                </small>
+              </div>
+              <h6 class="card-title">
+                <i class="fas fa-user-circle me-2"></i>@<%= review.author.username %>
+              </h6>
+              <p class="card-text"><%= review.comment %></p>
+              <% if(currentUser && currentUser._id.equals(review.author._id)) { %>
+                <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mt-auto">
+                  <button class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash me-1"></i>Delete
+                  </button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+<div class="map flex mt-4 mb-5 map-section">
+  <h4 class="text-center"><i class="fas fa-map-marker-alt me-2"></i>Where you'll be</h4>
+  <div class="" id="map"></div>
+</div>
 </div>
 <script src="/js/map.js"></script>

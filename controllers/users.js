@@ -4,7 +4,7 @@ module.exports.renderSignupForm = (req, res) => {
     res.render('users/signup.ejs', { title: 'Sign Up' });
 }
 
-module.exports.signup = async (req, res) => {
+module.exports.signup = async (req, res,next) => {
         try{
             let { username, email, password } = req.body;
             const newUser = new User({ username, email });
@@ -14,7 +14,7 @@ module.exports.signup = async (req, res) => {
                 if (err) {
                     return next(err);
                 }
-                req.flash('success', 'Welcome to Wanderlust!');
+                req.flash('success', 'Welcome to VistaStay!');
                 res.redirect('/listings');
             })
         }
@@ -29,7 +29,7 @@ module.exports.renderLoginForm = (req, res) => {
 };
 
 module.exports.login = async (req, res) => {
-            req.flash('success', 'Welcome back to Wanderlust!');
+            req.flash('success', 'Welcome back to VistaStay!');
             res.redirect(res.locals.redirectUrl || '/listings');
         }
 

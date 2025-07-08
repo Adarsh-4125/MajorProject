@@ -9,6 +9,7 @@ const listingsController = require("../controllers/listings.js");
 const multer = require("multer");
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage});
+const { trackView } = require('../middleware');
 
 
 router
@@ -16,7 +17,7 @@ router
 .get(wrapAsync(listingsController.index)) // index route
 .post( 
     isLoggedIn,
-    upload.single('listing[image]'),
+    upload.array('listing[image]',3), // allow up to 3 images
     validateListing,
     wrapAsync(listingsController.createListing)  // create route
 )
@@ -25,18 +26,24 @@ router.get("/cat", wrapAsync(listingsController.filterListings)); // category ro
 
 router.get("/search", wrapAsync(listingsController.searchListing)); // search route
 
+router.get("/about", (req, res) => {
+    res.render("listings/about");
+}); // about route
+
 
 
 // new route
 router.get("/new", isLoggedIn, listingsController.renderNewForm);
 
+router.get('/recommendations', isLoggedIn, listingsController.recommendations);
+
 router
 .route('/:id')
-.get(wrapAsync(listingsController.showListing)) // show route
+.get( trackView,wrapAsync(listingsController.showListing)) // show route
 .put( 
     isLoggedIn,
     isOwner,
-    upload.single('listing[image]'),
+    upload.array('listing[image]',3),
     validateListing,
      wrapAsync(listingsController.updateListing)
     ) // update route

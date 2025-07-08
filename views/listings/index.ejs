@@ -1,132 +1,115 @@
 <% layout('layouts/boilerplate') %>
-
-<body>
 <style>
-#filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(6px);
-    border-radius: 1.5rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    padding: 0.5rem 0.5rem;
-    /* position: sticky; */
-    top: 1rem;
-    z-index: 10;
-    margin-bottom: 1.5rem;
-}
-
-  .filter {
-    text-align: center;
-    margin-right: 2rem;
-    margin-top: 2rem;
-    opacity: 0.8;
-  }
-  .filter:hover {
-    opacity: 1;
-    cursor: pointer;
+  body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    color: #f1f1f1 !important;
   }
 
-  .filter p {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
+  .dark-mode .filters-section {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
   }
 
-  .filter a {
-    text-decoration: none;
-    color: #000;
-    opacity: 0.8;
-    font-size: 1.5rem;
-  }
-  .filter a:hover {
-    color: #fe424d;
+  .dark-mode .glider-contain {
+    background: rgba(45, 55, 72, 0.95) !important;
+    border-color: rgba(255,255,255,0.1);
   }
 
-  .tax-info {
-    display: none;
+  .dark-mode .filter a {
+    color: #f1f1f1 !important;
   }
-
-  .tax-toggle {
-    border: 1px solid #ccc;
-    border-radius: 1rem;
-    height: 3.5rem;
-    padding: 0.5rem 1rem;
-    margin-left: auto;
-    margin-right: 2rem;
-    margin-top: 2.5rem;
-    display: flex;
-  }
-
   
+  .dark-mode .filter:hover a {
+    color: var(--primary-color) !important;
+  }
+  .dark-mode .listing-card {
+    background: rgba(45, 55, 72, 0.95) !important;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .dark-mode .listing-title {
+    color: #f1f1f1 !important;
+  }
+
+  .dark-mode .tax-toggle {
+    background: rgba(45, 55, 72, 0.9) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+  }
+
+  .dark-mode .form-check-label {
+    color: #f1f1f1 !important;
+  }
+
+  .dark-mode .fav-btn {
+    background: rgba(45, 55, 72, 0.9) !important;
+  }
+.listing-card:hover {
+    /* transform: translateY(-8px) scale(1.025); */
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    background: rgba(254, 66, 77, 0.07);
+  }
+
+    .listing-card .card-text b {
+    font-size: 1.1rem;
+    color: #fe424d;
+    letter-spacing: 0.01em;
+  }
 </style>
 
-
-    <div id="filters">
+<div class="filters-section">
+  <div class="filters-container">
+   <div class="glider-contain">
+  <button class="glider-prev" aria-label="Previous filters">‹</button> 
+    <div id="filters" class="glider mt-3">
       <div class="filter">
         <a href="/listings/cat?category=trending" >
-        <div>
           <i class="fa-solid fa-fire"></i>
-        </div>
         <p>Trending</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=room" >
-        <div>
           <i class="fa-solid fa-bed"></i>
-        </div>
         <p>Room</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=mountains" >
-        <div>
           <i class="fa-solid fa-mountain-city"></i>
-        </div>
         <p>Mountains</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=castles" >
-        <div>
           <i class="fa-solid fa-chess-rook"></i>
-        </div>
         <p>Castles</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=pools" >
-        <div>
           <i class="fa-solid fa-person-swimming"></i>
-        </div>
         <p>Amazing pools</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=homes" >
-        <div>
           <i class="fa-solid fa-house"></i> 
-        </div>
         <p>Homes</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=farms" >
-        <div>
           <i class="fa-solid fa-wheat-awn"></i>
-        </div>
         <p>Farms</p>
         </a>
       </div>
       <div class="filter">
         <a href="/listings/cat?category=camping" >
-        <div>
           <i class="fa-solid fa-campground"></i>
-        </div>
         <p>Camping</p>
         </a>
       </div>
+      </div>
+     <button class="glider-next" aria-label="Next filters">›</button>
       <div class="tax-toggle">
         <div class="form-check-reverse form-switch">
           <input class="form-check-input" 
@@ -137,28 +120,39 @@
         </div>
       </div>
     </div>
-  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 mt-3">
-    <% for(let listing of allListings) { %>
-    <div class="card col listing-card">
-      <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark">
-      <img src="<%= listing.image.url %>" 
-      class="card-img-top" alt="listing_image" 
-      style="height: 20rem;"/>
+    </div>
+    </div>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 mt-3">
+  <% for(let listing of allListings) { %>
+  <div class="col">
+    <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark"> 
+  <div class="card listing-card shadow-sm border-0">
+      <% if (listing.image && listing.image.length > 0) { %>
+        <img src="<%= listing.image[0].url %>" class="card-img-top" alt="listing_image" style="height: 19rem;"/>
+                        <% } %>  
+
+          <!-- Heart Icon for Add to Favorites -->
+          <button class="fav-btn position-absolute heart" data-id="<%= listing._id %>"
+            onclick="toggleFavorite(event, this)">
+              <i class="bx bx-heart"></i>
+          </button>
       <div class="card-img-overlay"></div>
       <div class="card-body">
         <p class="card-text">
-         <p class="card-text">
           <b><%= listing.title %></b><br/>
           &#8377; 
           <%= listing.price ? listing.price.toLocaleString("en-IN") : "N/A" %> 
-          / night
-          <i class="tax-info">&nbsp; +18% GST</i><br/>
+          <span class="text-muted">/ night</span>
+          <i class="tax-info text-secondary">&nbsp; +18% GST</i><br/>
         </p>
       </div>
-      </a>
-    </div>
-<% } %>
   </div>
+  </a>
+  </div>
+  <% } %>
+</div>
+
 
 <script>
   let taxToggle = document.getElementById('switchCheckDefault');
@@ -169,5 +163,72 @@
       info.style.display = taxToggle.checked ? 'inline' : 'none';
     }
   })
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new Glider(document.querySelector('#filters'), {
+      slidesToShow: 6,
+      slidesToScroll: 2,
+      draggable: true,
+      dots: false,
+      arrows: {
+        prev: '.glider-prev',
+        next: '.glider-next'
+      },
+      responsive: [
+        {
+          breakpoint: 1200,
+          settings: {
+            slidesToShow: 5,
+            slidesToScroll: 2,
+          }
+        },
+        {
+          breakpoint: 992,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 2,
+          }
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1,
+          }
+        },
+        {
+          breakpoint: 576,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 1,
+          }
+        }
+      ]
+    });
+  });
+</script>
+
+<script>
+  const favorites = new Set();
+
+  function toggleFavorite(event, button) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const id = button.getAttribute('data-id');
+    const heartIcon = button.querySelector('i');
+
+    if(favorites.has(id)){
+      favorites.delete(id);
+      heartIcon.classList.remove('bxs-heart');
+      heartIcon.classList.add('bx-heart');
+    } else{
+      favorites.add(id);
+      heartIcon.classList.remove('bx-heart');
+      heartIcon.classList.add('bxs-heart');
+    }
+  }
 </script>
 
