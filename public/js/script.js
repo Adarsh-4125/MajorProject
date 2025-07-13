@@ -17,3 +17,23 @@
   })
 })()
 
+const favorites = new Set();
+
+function toggleFavorite(event, button) {
+  event.stopPropagation();
+  event.preventDefault();
+
+  const id = button.getAttribute('data-id');
+  const heartIcon = button.querySelector('i');
+
+  if(favorites.has(id)){
+    favorites.delete(id);
+    heartIcon.classList.remove('bxs-heart');
+    heartIcon.classList.add('bx-heart');
+  } else{
+    favorites.add(id);
+    heartIcon.classList.remove('bx-heart');
+    heartIcon.classList.add('bxs-heart');
+  }
+}
+

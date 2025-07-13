@@ -1,0 +1,34 @@
+<% layout('layouts/boilerplate') %>
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Booking Details</h2>
+    <div class="row">
+        <div class="col-10 offset-1">
+            <div class="card">
+                <img src="<%= booking.listing.image[0].url %>" class="card-img-top" 
+                alt="<%= booking.listing.title %>" style="height: 20rem; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title mb-3 heading"><%= booking.listing.title %></h5>
+                    <p class="card-text">
+                        <div><strong>Check-in:</strong> <%= new Date(booking.checkIn).toLocaleDateString() %></div>
+                        <div><strong>Check-out:</strong> <%= new Date(booking.checkOut).toLocaleDateString() %></div>
+                        <div><strong>Total Price:</strong> ₹<%= booking.totalPrice %></div>
+                        <div><strong>Status:</strong> <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : booking.status === 'cancelled' ? 'danger' : 'warning' %>"><%= booking.status %></span></div>
+                        <div><strong>Owner:</strong> <%= booking.listing.owner.username %></div>
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a href="/listings/<%= booking.listing._id %>" class="btn btn-secondary">Back to Listing</a>
+                        <a href="/my-bookings" class="btn btn-outline-primary">My Bookings</a>
+                        <% if(booking.user._id.equals(currentUser._id) && booking.status === 'pending') { %>
+                            <form action="/bookings/<%= booking._id %>?_method=DELETE" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                                    Cancel Booking
+                                </button>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

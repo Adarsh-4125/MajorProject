@@ -1,0 +1,262 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Host Dashboard</h1>
+            
+            <!-- Dashboard Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h4><%= listings.length %></h4>
+                            <p class="mb-0">Total Listings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h4><%= bookings.filter(b => b.status === 'confirmed').length %></h4>
+                            <p class="mb-0">Confirmed Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h4><%= bookings.filter(b => b.status === 'pending').length %></h4>
+                            <p class="mb-0">Pending Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h4>₹<%= bookings.length > 0 ? bookings.reduce((sum, b) => sum + (b.status === 'confirmed' ? b.totalPrice : 0), 0) : 0 %></h4>
+                            <p class="mb-0">Total Earnings</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="listings-tab" data-bs-toggle="tab" data-bs-target="#listings" type="button" role="tab">
+                        <i class="fas fa-home me-2"></i>My Listings
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab">
+                        <i class="fas fa-calendar-check me-2"></i>Bookings (<%= bookings.length %>)
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="dashboardTabContent">
+                <!-- Listings Tab -->
+                <div class="tab-pane fade show active" id="listings" role="tabpanel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>My Listings</h3>
+                        <a href="/listings/new" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Add New Listing
+                        </a>
+                    </div>
+                    
+                    <% if(listings.length === 0) { %>
+                        <div class="text-center py-5">
+                            <i class="fas fa-home fa-3x text-muted mb-3"></i>
+                            <h4>No listings yet</h4>
+                            <p class="text-muted">Start by creating your first listing to attract guests.</p>
+                            <a href="/listings/new" class="btn btn-primary">Create Your First Listing</a>
+                        </div>
+                    <% } else { %>
+                        <div class="row">
+                            <% listings.forEach(listing => { %>
+                                <div class="col-md-6 col-lg-4 mb-4">
+                                    <div class="card h-100 shadow-sm">
+                                        <% if(listing.image && listing.image.length > 0) { %>
+                                            <img src="<%= listing.image[0].url %>" class="card-img-top" alt="<%= listing.title %>" style="height: 200px; object-fit: cover;">
+                                        <% } else { %>
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        <% } %>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><%= listing.title %></h5>
+                                            <p class="card-text text-muted">
+                                                <i class="fas fa-map-marker-alt me-1"></i><%= listing.location %>
+                                            </p>
+                                            <p class="card-text">
+                                                <strong>₹<%= listing.price %></strong> per night
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-success">
+                                                    Active
+                                                </span>
+                                                <div class="btn-group" role="group">
+                                                    <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-warning btn-sm">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" style="display: inline;">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this listing?')">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Bookings Tab -->
+                <div class="tab-pane fade" id="bookings" role="tabpanel">
+                    <h3>Bookings for My Listings</h3>
+                    
+                    <% if(bookings.length === 0) { %>
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h4>No bookings yet</h4>
+                            <p class="text-muted">When guests book your listings, they'll appear here.</p>
+                        </div>
+                    <% } else { %>
+                        <!-- Booking Filters -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <select class="form-select" id="statusFilter">
+                                    <option value="">All Statuses</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="searchBookings" placeholder="Search by guest name or listing title...">
+                            </div>
+                        </div>
+
+                        <div class="row" id="bookingsContainer">
+                            <% bookings.forEach(booking => { %>
+                                <div class="col-md-6 col-lg-4 mb-4 booking-card" data-status="<%= booking.status %>" data-search="<%= booking.user.username.toLowerCase() %> <%= booking.listing.title.toLowerCase() %>">
+                                    <div class="card h-100 shadow-sm">
+                                        <% if(booking.listing.image && booking.listing.image.length > 0) { %>
+                                            <img src="<%= booking.listing.image[0].url %>" class="card-img-top" alt="<%= booking.listing.title %>" style="height: 200px; object-fit: cover;">
+                                        <% } else { %>
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="fas fa-image fa-3x text-muted"></i>
+                                            </div>
+                                        <% } %>
+                                        <div class="card-body">
+                                            <h6 class="card-title"><%= booking.listing.title %></h6>
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-user me-1"></i><%= booking.user.username %><br>
+                                                    <i class="fas fa-calendar me-1"></i><%= new Date(booking.checkIn).toLocaleDateString() %> - <%= new Date(booking.checkOut).toLocaleDateString() %><br>
+                                                    <i class="fas fa-users me-1"></i><%= booking.guests %> guests<br>
+                                                    <i class="fas fa-rupee-sign me-1"></i><%= booking.totalPrice %>
+                                                </small>
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : booking.status === 'cancelled' ? 'danger' : 'warning' %>">
+                                                    <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                                </span>
+                                                <a href="/bookings/<%= booking._id %>" class="btn btn-primary btn-sm">
+                                                    View Details
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 3px solid #0d6efd;
+    background: none;
+}
+
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-top-left-radius: 0.375rem;
+    border-bottom-left-radius: 0.375rem;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+}
+
+.booking-card {
+    transition: all 0.3s ease;
+}
+
+.booking-card.hidden {
+    display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Status filter functionality
+    const statusFilter = document.getElementById('statusFilter');
+    const searchInput = document.getElementById('searchBookings');
+    const bookingCards = document.querySelectorAll('.booking-card');
+
+    function filterBookings() {
+        const selectedStatus = statusFilter.value;
+        const searchTerm = searchInput.value.toLowerCase();
+
+        bookingCards.forEach(card => {
+            const status = card.dataset.status;
+            const searchText = card.dataset.search;
+            
+            const statusMatch = !selectedStatus || status === selectedStatus;
+            const searchMatch = !searchTerm || searchText.includes(searchTerm);
+            
+            if (statusMatch && searchMatch) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    }
+
+    statusFilter.addEventListener('change', filterBookings);
+    searchInput.addEventListener('input', filterBookings);
+});
+</script>

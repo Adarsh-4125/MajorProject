@@ -1,10 +1,52 @@
 <% layout("/layouts/boilerplate") %>
+<style>
+        .form_body {
+            background-color: white;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 3rem 3rem;
+        }
+    .dark-mode{
+        .form_body {
+            background-color: #2e2e2e;
+            border-radius: 5px;
+            padding: 30px;
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .form-label {
+            color: #ffffff;
+        }
+        /* Input Fields Styling */
+        .signup_form input[type="text"], input[type="password"],input[type="email"]{
+            background-color: #373737;
+            color: #ffffff;
+            border: 1px solid #555555;
+            /* transition: box-shadow 0.3s ease; */
+        }
+    
+        .signup_form input[type="text"]::placeholder,
+        .signup_form input[type="password"]::placeholder, 
+        .signup_form input[type="email"]::placeholder {
+            color: #aaaaaa;
+        }
+    }
+    
+    /* Style for the form-control with toggle icon */
+    .signup_form {
+        position: relative;
+    }
 
+
+
+</style>
 <div class="row mt-3">
-    <div class="col-6 offset-3">
-        <h2>Signup on WanderLust</h2>
+    <div class="col-6 offset-3 mx-auto form_body">
+        <h2 class="heading text-center">Create an account </h2>
         <form action="/signup" method="POST" class="needs-validation" novalidate>
-        <div class="mb-3">
+        <div class="mb-3 signup_form">
             <label for="username" 
             class="form-label"
             >Username</label>
@@ -15,7 +57,7 @@
             required>
             <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 signup_form">
             <label for="email" 
             class="form-label"
             >Email</label>

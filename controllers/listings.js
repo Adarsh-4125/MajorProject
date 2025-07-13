@@ -1,7 +1,9 @@
 const Listing = require("../models/listing");
+const User = require("../models/user");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
+const cloudinary = require("cloudinary").v2;
 
 module.exports.index = async (req, res) => { 
     const allListings = await Listing.find({});
@@ -36,11 +38,22 @@ module.exports.createListing = async (req, res) => {
             limit: 1,
         }).send()
 
-        let url = req.file.path;
-        let filename = req.file.filename;
-        const newListing=new Listing(req.body.listing);
+
+        let newListing=new Listing(req.body.listing);
         newListing.owner = req.user._id;
-        newListing.image = { url, filename };
+        newListing.image = [];
+
+        if(req.files && req.files.length > 0) {
+            req.files.forEach(file => {
+                newListing.image.push({
+                    url: file.path,
+                    filename: file.filename
+                });
+            });
+        }
+
+        newListing.submittedAt = new Date();
+        newListing.category = req.body.listing.category;
 
         newListing.geometry = response.body.features[0].geometry;
 
@@ -58,21 +71,38 @@ module.exports.renderEditForm = async (req, res, next) => {
         req.flash("error", "Listing you are looking for does not exist!");
         return res.redirect("/listings");
     }
-    let originalImageUrl = listing.image.url;
+    let originalImageUrl = listing.image[0].url;
     originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250/");
     res.render("listings/edit.ejs", {listing, originalImageUrl} );
 }
 
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params;
+    if (req.body.listing.image) {
+        delete req.body.listing.image;
+    }
     let listing = await Listing.findByIdAndUpdate(id, {...req.body.listing});
+    
+    if(req.body.deleteImages && req.body.deleteImages.length > 0) {
+        for (let filename of req.body.deleteImages) {
+            await cloudinary.uploader.destroy(filename);
+            listing.image = listing.image.filter(img => img.filename !== filename);
+        }
 
-    if(typeof req.file !== "undefined") {
-        let url = req.file.path;
-        let filename = req.file.filename;
-        listing.image = { url, filename };
         await listing.save();
     }
+
+    if(req.files) {
+        req.files.forEach(file => {
+            listing.image.push({
+                url: file.path,
+                filename: file.filename
+            })
+        })
+        await listing.save();
+    }
+    listing.submittedAt = Date.now();
+    await listing.save();
     req.flash("success", "Successfully updated the listing!");
     //console.log("updated listing", req.body.listing);
     res.redirect(`/listings/${id}`);
@@ -81,6 +111,10 @@ module.exports.updateListing = async (req, res) => {
 module.exports.destroyListing = async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
+    await User.updateMany(
+  {},
+  { $pull: { recentViews: deletedListing._id } }
+);
     //console.log(deletedListing);
     req.flash("success", "Successfully deleted the listing!");
     res.redirect(`/listings`);
@@ -101,6 +135,10 @@ module.exports.searchListing = async (req, res) => {
     } else {
         allListings = await Listing.find({});
     }
+    if(allListings.length === 0) {
+        req.flash("error", "No listings found!");
+        return res.redirect("/listings");
+    }
     res.render("listings/index.ejs", { allListings, q });
 }
 
@@ -114,3 +152,23 @@ module.exports.filterListings = async (req, res) => {
     }
     res.render("listings/index.ejs", { allListings, category });
 }
+
+module.exports.recommendations = async (req, res) => {
+    let recommendations = [];
+    const allListings = await Listing.find({});
+    if (req.user && req.user.recentCategories && req.user.recentCategories.length > 0) {
+        // Find listings in the user's recently viewed categories, excluding ones they've already viewed
+        recommendations = await Listing.find({
+            category: { $in: req.user.recentCategories },
+            _id: { $nin: req.user.recentViews }
+        }).limit(5);
+    } else {
+        // Fallback: show latest listings
+        recommendations = await Listing.find({}).sort({ createdAt: -1 }).limit(5);
+    }
+    if(recommendations.length === 0) {
+        req.flash("error", "No recommendations found!");
+        return res.redirect("/listings");
+    }
+    res.render('listings/recommendations', { recommendations, allListings });
+};
